@@ -1,0 +1,60 @@
+Antaresia
+Antaresia childreni, Children's python
+Antaresia maculosa, spotted python
+Antaresia perthensis, pygmy python
+Antaresia stimsoni, Stimson's python
+Apodora
+Apodora papuana, Papuan python
+Aspidites
+Aspidites melanocephalus, black-headed python
+Aspidites ramsayi, woma
+Bothrochilus
+Bothrochilus albertisii, D'Albert's water python
+Bothrochilus boa, Bismark ringed python
+Bothrochilus biakensis, Biak white-lipped python
+Bothrochilus fredparkeri, Parker's white-lipped python
+Bothrochilus huonensis, Huon white-lipped python
+Bothrochilus meridionalis, southern whitelip python
+Bothrochilus montanus, Wau whitelip python
+Liasis
+Liasis fuscus, brown water python
+Liasis mackloti, Macklot's python
+Liasis mackloti mackloti, Macklot's python
+Liasis mackloti savuensis, Savu python
+Liasis olivaceus, olive python
+Liasis olivaceus barroni, Pilbara olive python
+Liasis olivaceus olivaceus, olive python
+Morelia
+Morelia amethistina, amethystine python
+Morelia clastolepis, Moluccan python
+Morelia boeleni, Boelen's python
+Morelia bredli, Bredl's python
+Morelia carinata, rough-scaled python
+Morelia kinghorni, Kinghorn's python
+Morelia nauta, Tanimbar python
+Morelia oenpelliensis, Oenpelli python
+Morelia spilota, carpet pythons
+Morelia spilota cheynei, jungle carpet python
+Morelia spilota imbricata, southwestern carpet python
+Morelia spilota mcdowelli, coastal carpet python
+Morelia spilota metcalfei, inland carpet python
+Morelia spilota spilota, diamond python
+Morelia spilota variegata, northwestern carpet python
+Morelia tracyae, Halmahera python
+Morelia viridis, green tree python
+Python
+Python anchietae, Angolan python
+Python bivittatus, Burmese python
+Python bivittatus progschai, dwarf Burmese python
+Python breitensteini, Borneo short-tailed python
+Python brongersmai, red blood python
+Python curtus, Sumatran short-tailed python
+Python kyaiktiyo, Myanmar short-tailed python
+Python molurus, Indian python
+Python molurus molurus, Indian python
+Python regius, royal python
+Python reticulatus, reticulated python
+Python sebae, African rock python
+Python sebae natalensis, Natal rock python
+Python sebae sebae, African rock python
+Python timoriensis, Timor python
