@@ -1,0 +1,410 @@
+# Jak zamieścić paczkę w PyPI - Python Package Index
+
+Ten poradnik jest stworzony z myślą o twórcach wolnego oprogramowania - czyli osobach takich jak my. Chcemy wiedzieć, jak sprawić, by komenda:
+
+```
+pip install moja_paczka_open_source
+```
+
+instalowała nasz kod Pythona na innych maszynach. W tym poradniku poznamy podstawy publikacji i **utrzymania** paczek Pythona w menadżerze pakietów [PyPI](https://pypi.org/).
+
+## Wymagania
+
+1. Połączenie z internetem.
+2. Poprawnie skonfigurowany Python w wersji 3.6+.
+
+## Poszczególne kroki: zestawienie
+
+Na początku wymienimy wszystkie kroki wymagane przed zamieszczeniem paczki w `PyPI`. Nie jest to proces skomplikowany ale składa się z kilku etapów, które mogą przytłoczyć na początku. Niektóre z tych etapów są tak naprawdę *ciężkie* tylko przy pierwszej publikacji, później wszystko idzie sprawnie i szybko. Schemat publikacji paczki wygląda następująco:
+
+1. Zarejestruj się na PyPI i testPyPI.
+2. Przygotuj wszystkie pliki wewnątrz repozytorium.
+3. Przeprowadź testy jednostkowe.
+4. Stwórz archiwa zawierające pliki z wnętrza paczki.
+5. Sprawdź zawartość archiwów.
+6. Opublikuj paczkę na `testPyPI`.
+7. Sprawdź paczkę opublikowaną na `testPyPI`.
+8. (Opcjonalnie) Opublikuj paczkę na `PyPI`.
+9. (Opcjonalnie) Po zmianach w kodzie uzupełnił wersję paczki i przejdź ponownie do kroków 4-8.
+
+## Rejestracja na PyPI i testPyPI
+
+Pewnie zastanawiasz się, dlaczego rejestrujemy się na dwóch różnych serwisach. Odpowiedź jest bardzo ważna, a mianowicie, dobrym konwenansem jest **niezaśmiecanie PyPI**. Nie jest to wcale tak łatwo osiągnąć, szczególnie na początku naszej kariery z Open Source, dlatego ktoś wymyślił testPyPI - czyli serwis naśladujący PyPI ale domyślnie nie powiązany w żaden sposób z menadżerem pakietów `pip`.
+
+Rejestracja jest standardową procedurą i dokonać jej możesz tutaj:
+
+- **`PyPI`**: [https://pypi.org/account/register/](https://pypi.org/account/register/)
+- **`testPyPI`**: [https://test.pypi.org/account/register/](https://test.pypi.org/account/register/)
+
+Zapamiętaj albo zapisz swoją nazwę użytkownika **username** i hasło **password** ponieważ będą Ci one potrzebne w celu wrzucenia paczki.
+
+## Przygotuj wszystkie pliki wewnątrz repozytorium
+
+Publikcja w `PyPI` wymaga kilku plików, które zawsze muszą znajdować się w repozytorium. Są to pliki dokumentujące projekt i pliki, które pozwalają na konfigurację paczki. Znajdziemy je w każdym projekcie Open Source. Zaczniemy od stworzenia struktury naszej paczki, a będzie prezentowała się następująco:
+
+```
+hsreader/
+|
+| hsreader/
+    | __init__.py
+    | __main__.py
+    | download.py
+    | show.py
+|
+| README.md
+| LICENSE.md
+| MANIFEST.in
+| setup.cfg
+| setup.py
+```
+
+Możesz też pobrać całą paczkę [tutaj](https://github.com/szymon-datalions/hsreader)
+
+### Zawartość plików w katalogu `hsreader`
+
+#### `__init__.py`
+
+```python
+from hsreader.download import download
+from hsreader.show import show
+
+__version__ = '0.1.3'
+
+URL = 'https://hs3.pl/'
+FILENAME = 'hs3.html'
+
+```
+
+**Najważniejsze elementy**: zmienna `__version__`. Każda paczka Pythona musi mieć zdefiniowaną wersję i **nie można zamieścić dwa razy tej samej paczki z taką samą wersją**. Więc jeśli popełnimy błąd i poprawimy go w paczce, musimy podnieść jej wersję. Na przykład z `'0.1.0'` do `'0.1.1'`
+
+#### `__main__.py`
+
+```python
+"""Read the HS3 City Webpage.
+Usage:
+------
+    $ hsreader [options]
+
+Available options are:
+    -h, --help         Show this help
+    -d, --download     Download HS3 City webpage into chosen directory
+    -r, --read         Show HS3 City webpage in terminal
+
+Version:
+--------
+- hsreader v0.1.0
+"""
+import sys
+
+import hsreader
+from hsreader import download, show
+
+def main():
+    """Read HS3City Webpage"""
+
+    # Read url
+
+    url = hsreader.URL
+    output_file = hsreader.FILENAME
+
+    # Read options
+    opts = [o for o in sys.argv[1:] if o.startswith("-")]
+
+    # Perform actions based on the options
+    if '-h' in opts or '--help' in opts:
+        print(__doc__)
+        raise SystemExit()
+    elif '-d' in opts or '--download' in opts:
+        download(url, output_file)
+    elif '-r' in opts or '--read' in opts:
+        show(url)
+    else:
+        print('Option not implement')
+        print(__doc__)
+        raise SystemExit()
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+#### `download.py`
+
+```python
+import requests
+
+
+def download(url: str, filename: str):
+    """
+    Function stores scraped webpage as HTML
+
+    :param url: (str),
+    :param filename: (str)
+    """
+    try:
+        data = requests.get(url, timeout=5)
+    except Exception as e:
+        print('Błąd połączenia')
+        print(e)
+    else:
+        with open(filename, 'w') as f:
+            f.write(data.text)
+            print(f'File {filename} stored sucessfully')
+
+```
+
+#### `show.py`
+
+```
+import requests
+
+
+def show(url: str):
+    """
+    Function shows scraped webpage in terminal.
+
+    :param url: (str)
+    """
+    try:
+        data = requests.get(url, timeout=5)
+    except Exception as e:
+        print('Błąd połączenia')
+        print(e)
+    else:
+        text = data.text
+        print(text)
+
+```
+
+## Stwórz wirtualne środowisko
+
+Stwórz wirtualne środowisko do dalszej pracy. Powinno być w wersji Pythona 3.6 albo wyższej. Wewnątrz środowiska zainstaluj (teraz) następujące paczki:
+
+- `requests`,
+- `pip`,
+- `setuptools`.
+
+## Wybierz licencję
+
+Ważnym krokiem w publikacji projektu Open Source Software jest [wybór licencji](https://opensource.guide/legal/#which-open-source-license-is-appropriate-for-my-project). Nie powinieneś traktować tego po macoszemu, przede wszystkim dlatego, że są kraje, gdzie licencja jest bardzo ważna a licencja chroni również **Ciebie** w przypadku uszkodzeń spowodowanych przez kod (a są trolle, które polują na twórców Open Source). Nie zamieszczając licencji nie wzbudzisz zaufania do swojej paczki a niektóre typy licencji są bardzo restrykcyjne. Dla większości twórców Open Source przydatne będą dwie licencje: **MIT** albo **BSD 3-Clause**. Więcej typów wraz ze związanym z nimi ryzykiem możesz znaleźć [pod tym adresem](https://www.synopsys.com/blogs/software-security/top-open-source-licenses/).
+
+W naszym projekcie wybraliśmy licencję BSD 3:
+
+---
+```
+Copyright (c) 2021 Szymon Moliński
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of the author nor the names of any contributors
+  may be used to endorse or promote products derived from this software
+  without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+---
+
+## Napisz `Readme`
+
+Kolejnym ważnym elementem projektu jest `README.md`. Dlaczego? Bo jest to pierwsza strona którą zobaczy użytkownik korzystający z naszej paczki. Jeśli napiszemy za mało albo bez zbytniego sensu, wtedy możemy spodziewać się małych zasięgów. `README` powinno zawierać:
+
+- podstawowe informacje czym paczka jest i jakie są jej funkcjonalności,
+- przykład użycia paczki,
+- (opcjonalnie) sposób instalacji,
+- (opcjonalnie) sposób, w jaki kontrybuujemy,
+- (opcjonalnie) kontakt do autora.
+
+## Wypełnij pliki konfiguracyjne, `setup.py`, `setup.cfg` i `manifest.in`
+
+### `setup.py`
+
+Najważniejszy krok przed publikacją paczki to wypełnienie pliku konfiguracyjnego `setup.py`. Zawiera on metadane paczki i ułatwia późniejsze jej wyszukiwanie. Minimalna konfiguracja w naszej paczce wygląda następująco:
+
+```
+import re
+from setuptools import setup, find_packages
+from os import path
+
+
+here = path.abspath(path.dirname(__file__))
+
+# Project description
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_desc = f.read()
+
+# obtain version string from __init__.py
+with open(path.join(here, 'hsreader/__init__.py'), 'r') as f:
+    init_py = f.read()
+version = re.search("__version__ = '(.*)'", init_py).groups()[0]
+
+setup(
+    name='hsreader',
+    version=version,
+    description='Read and download HackerSpace Trójmiasto webpage',
+    long_description=long_desc,
+    long_description_content_type='text/markdown',
+    url='https://github.com/szymon-datalions/hsreader',
+    download_url='https://github.com/szymon-datalions/hsreader/archive/v0.1.0.tar.gz',
+    author='Szymon Moliński',
+    author_email='simon@ml-gis-service.com',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Education',
+        'License :: OSI Approved :: BSD License',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3'
+    ],
+    keywords=['Tutorials', 'Hacktoberfest 2021'],
+    packages=find_packages(exclude=['docs']),
+
+    install_requires=[
+        'requests'
+    ],
+    project_urls={
+        'Bug Reports': 'https://github.com/szymon-datalions/hsreader/issues',
+        'HackerSpace Trójmiasto Webpage': 'https://hs3.pl/',
+        'HackerSpace Trójmiasto Discord': 'https://discord.gg/GSTgYzU',
+    },
+    entry_points={
+        "console_scripts": [
+            "hsreader=hsreader.__main__:main",
+        ]
+    },
+)
+
+```
+
+**Najważniejsze elementy**:
+
+- `classifiers` - lista do przejrzenia jest [dostępna na PyPI](https://pypi.org/classifiers/),
+- `install_requires` - dodatkowe paczki, poza biblioteką standardową, które są wymagane do poprawnego działania naszej paczki,
+- `entry_points` - sposób uruchamiania kodu.
+
+### `setup.cfg`
+
+W pliku tym zamieścimy tylko informacje o metadanych paczki (readme):
+
+```
+[metadata]
+description-file = README.md
+```
+
+### `MANIFEST.in`
+
+W tym pliku dołączamy `include` albo wyłączamy `exclude` pewne fragmenty paczki które chcemy publikować albo nie chcemy. Często będziemy chcieli dodać do paczki dane testowe (`include`) a usunąć katalogi z deweloperską wersją różnych funkcji (`exclude`). W naszym przypadku pozostawiamy plik pusty.
+
+---
+
+Dotarliśmy do końca etapu konfiguracji! Ważne elementy, które mogą się nam jeszcze przydać na tym etapie to:
+
+- plik `.gitignore`,
+- testy,
+- dokumentacja systemu.
+
+Nie jest to jednak temat obowiązkowy i wymagany podczas publikacji paczki.
+
+## Publikcja w testPyPI
+
+Po wykonaniu wszystkich testów jednostkowych czas na publikację! Najpier musimy doinstalować w naszym wirtualnym środowisku menadżer pakietów `twine`:
+
+```bash
+pip install twine
+```
+
+i kolejna paczka wymagana podczas przygotowania projektu to `wheel`:
+
+```bash
+pip install wheel
+```
+
+### Budowa i testy paczki
+
+Paczki udostępniane są jako archiwa, dlatego przed publikacją musimy ją doprowadzić do odpowiedniego stanu. Służy do tego następująca komenda wydawana z powłoki:
+
+```
+python setup.py sdist bdist_wheel
+```
+
+W naszym katalogu z paczką powinny pojawić się dwa nowe katalogi: `dist` i `build`. Jeśli wszystko przebiegło pomyślnie, to już jesteśmy tylko krok od publikacji! Zajrzyjmy jeszcze do środka archiwum z paczką, czy są tam wszystkie potrzebne pliki (ręcznie).
+
+Możemy też użyć `twine` i sprawdzić nasze archiwa:
+
+```
+twine check dist/*
+```
+
+### Wysłanie paczki do testPyPI
+
+Pamiętałeś o rejestracji tutaj:
+
+- **`PyPI`**: [https://pypi.org/account/register/](https://pypi.org/account/register/)
+- **`testPyPI`**: [https://test.pypi.org/account/register/](https://test.pypi.org/account/register/)?
+
+Teraz wykorzystasz **username** i **password** z obu serwisów. Na początek załadujemy naszą paczkę do `testPyPI` i sprawdzimy, czy wszystko działa jak należy:
+
+```
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+```
+
+Voila! Paczka dostępna jest pod adresem:
+
+[https://test.pypi.org/project/hsreader/0.1.3/](https://test.pypi.org/project/hsreader/0.1.3/)
+
+Teraz sprawdźmy, czy działa jak należy! Utwórz nowe środowisko wirtualne i zainstaluj w nim paczkę:
+
+```
+pip install -i https://test.pypi.org/pypi/ --extra-index-url https://pypi.org/simple hsreader
+```
+
+Po instalacji sprawdź, czy paczka działa. Wpiszmy w terminalu:
+
+```
+python -m hs3reader -r
+```
+
+Jeśli wszystko działa, jesteśmy gotowi do publikacji w PyPI!
+
+### Publikacja i update w PyPI
+
+Publikacja w PyPI jest analogiczna jak w `testPyPI`. Warto jednak dublować katalogi przed publikacją, bo testy w testPyPI często podbijają wersję (a w PyPI możemy dać przecież niższą). Pewnie zauważyłeś, że paczka w tym poradniku ma już wersję `0.1.3`. Jest to spowodowane uszczelnianiem i poprawkami w kodzie po publikacji w `testPyPI`.
+
+Publikacja w `PyPI` jest prosta i wymaga tylko wpisania:
+
+```
+twine upload dist/*
+```
+
+**Jednakże uważaj z publikacjami!** Na tej platformie powinny znaleźć się dobrze przetestowane i sensowne pakiety. Unikaj publikacji byle-czego.
+
+### Aktualizacja paczki
+
+Paczkę aktualizujemy według schematu:
+
+1. Zmiana wersji paczki.
+2. Usunięcie starej wersji (katalogów `dist` i `build`).
+3. Zbudowanie paczki.
+4. Testy na testPyPI.
+5. Publikacja na PyPI.
+
+## Masz pytania?
+
+- Napisz do mnie: simon@ml-gis-service.com
+- Napisz na Discord: https://discord.gg/GSTgYzU
+- Paczka: https://github.com/szymon-datalions/hsreader
