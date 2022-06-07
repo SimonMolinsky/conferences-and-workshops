@@ -1,0 +1,45 @@
+A. Prawa własności intelektualnej
+
+Chyba że określono inaczej, kod zawarty w niniejszym repozytorium, 
+jak również wszystkie prawa własności intelektualnej (włącznie z prawem autorskim majątkowym) 
+należą do Szymona Molińskiego (dalej: Autora).
+
+Autor posiada wyłączne prawa (własności intelektualnej) do udostępnionego kodu i zabrania kopiowania, 
+wykorzystywania fragmentów kodu, publikowania, promowania, zbywania lub wykorzystywania w jakikolwiek inny sposób 
+kodu bez wyraźnej pisemnej zgody w CELACH KOMERCYJNYCH. 
+
+W przypadku wykorzystywania kodu w celach naukowych przez jednostki naukowe 
+(nie przez firmy ani instytuty badawcze prowadzące działalność gospodarczą), 
+w celach edukacyjnych na potrzeby własne (nie na potrzeby komercyjnych i niekomercyjnych szkoleń) 
+nie jest wymagana zgoda Autora.
+
+W przypadku (częściowego lub pełnego) wykorzystania kodu w celach komercyjnych, 
+prawa własności do produktu / usługi oraz prawa majątkowe do produktu / usługi w całości przekazywane są Autorowi.
+
+Specjalnie dla nieświadomych biznesmenów Autor wymienia kilka wybranych celów komercyjnych zastosowania kodu 
+z repozytorium, których się nie dopuszcza:
+- przygotowanie wniosków o dotacje lub wniosków przetargów (np.: do NCBiR-u albo ESA),
+- wykorzystywanie kodu na szkoleniach podczas różnego typu programów akceleracyjnych, 
+hackatonów albo w ramach zajęć i warsztatów,
+- wykorzystywanie kodu na prezentacjach biznesowych,
+- wykorzystanie kodu we własnym oprogramowaniu i kopiowanie jego fragmentów do tworzonych usług i produktów,
+- wykorzystanie kodu w innych celach biznesowych.
+
+W razie wątpliwości zapraszam do kontaktu z Autorem: s.molinski@datalions.eu
+
+B. Właściwe przepisy prawa, jurysdykcja i rozwiązywanie sporów
+
+W stopniu określonym przez obowiązujące przepisy prawne, poniższe warunki i postanowienia, 
+podlegają prawu obowiązującemu w Polsce. Wszystkie spory wynikające z tych warunków i postanowień 
+będą rozstrzygane wyłącznie przez sąd właściwy dla miasta Opole w Polsce.
+
+Jeśli którykolwiek z warunków lub postanowień jest lub stanie się nieważny, niewykonalny lub niewiążący, 
+w dalszym ciągu pozostaną Państwo związani wszystkimi pozostałymi postanowieniami i warunkami. 
+W takim przypadku nieważne postanowienie zostanie mimo wszystko wyegzekwowane w pełnym wymiarze, 
+zgodnie z obowiązującym prawem, a Państwo zgodzą się co najmniej na uznanie podobnego postanowienia za nieważne, 
+niewykonalne lub niewiążące, biorąc pod uwagę treść warunków i postanowień.
+
+C. Prawo do komercyjnego wykorzystania kodu z repozytorium posiada również magazyn "Programista". 
+Tak gwoli ścisłości.
+
+D. Autor nie ponosi odpowiedzialności za wykorzystanie kodu lub jego fragmentów.
